@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WW2 Duitse Helm Lotnummer Zoekmachine</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:#eee;font-family:Arial;background:#172018 url('achtergrond.png') center/cover fixed}body:before{content:"";position:fixed;inset:0;background:rgba(0,0,0,.22);z-index:-1}.wrap{max-width:1180px;margin:auto;padding:20px}h1{text-align:center;font:38px Georgia;color:#f4e5c1;text-shadow:2px 2px 8px #000}.sub{text-align:center;margin-bottom:18px}.panel{background:rgba(8,8,8,.88);border:1px solid #666;border-radius:14px;padding:18px;margin:15px 0;box-shadow:0 8px 28px #000}.search{display:flex;gap:10px;flex-wrap:wrap}input{flex:1;min-width:220px;padding:16px;background:#090909;color:#fff;border:1px solid #777;border-radius:8px;font-size:18px}button{padding:16px 24px;border:0;border-radius:8px;font-weight:bold;background:#d6c5a2;color:#111}.meta{color:#cdbb91;font-size:14px;margin-top:10px}.card{background:rgba(18,18,18,.95);border:1px solid #555;border-radius:10px;padding:15px;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}.source{color:#e0c78f;font-weight:bold}</style>
+</head>
+<body><div class="wrap">
+<h1>WW2 Duitse Helm Lotnummer Zoekmachine</h1>
+<div class="sub">Alleen zoeken en volledige tekst weergeven</div>
+<div class="panel"><div class="search"><input id="q" placeholder="Zoek lotnummer, maker, model, maat of tekst"><button onclick="zoek()">ZOEKEN</button></div><div class="meta">GHV 2022 + Brian Ice 2016</div></div>
+<div class="panel" id="result">Database laden...</div>
+</div>
+<script>
+let DATA=[];const result=document.getElementById('result');
+fetch('database.json').then(r=>r.json()).then(d=>{DATA=d;result.innerHTML='<b>Database geladen: '+DATA.length+' records.</b>'}).catch(()=>{result.innerHTML='<b>Database ontbreekt.</b><br>Upload database.json naar deze repository.'});
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function zoek(){const q=document.getElementById('q').value.trim().toLowerCase();if(!q){result.innerHTML='Voer een zoekterm in.';return}const hits=DATA.filter(x=>JSON.stringify(x).toLowerCase().includes(q));let h='<b>'+hits.length+' resultaten</b>';hits.slice(0,100).forEach(x=>{h+='<div class="card"><div class="source">'+esc(x.bron)+'</div>'+(x.pagina?'Pagina '+esc(x.pagina)+'<br>':'')+'<b>'+esc(x.model||'')+' '+esc(x.maker_maat||'')+(x.lot?' · lot '+esc(x.lot):'')+'</b><br>'+esc(x.configuratie||'')+'<br>'+esc(x.liner||'')+'<br><br>'+esc(x.tekst||'')+'</div>'});if(hits.length>100)h+='<div class="meta">Eerste 100 resultaten weergegeven.</div>';result.innerHTML=h}
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')zoek()});
+</script></body></html>
